@@ -41,11 +41,9 @@ Player &Player::operator=(const Player &other)
     if (this == &other)
         return *this;
 
-    // Free old name
     delete[] name;
     name = nullptr;
 
-    // Copy name
     if (other.name == nullptr)
     {
         name = nullptr;
@@ -57,7 +55,6 @@ Player &Player::operator=(const Player &other)
         std::strcpy(name, other.name);
     }
 
-    // Copy hand (Deck has its own operator= with deep copy)
     hand = other.hand;
 
     return *this;
@@ -70,31 +67,26 @@ Player::~Player()
     name = nullptr;
 }
 
-// Receive a card into the hand
 void Player::receiveCard(const Card &c)
 {
     hand.addCard(c);
 }
 
-// Play (draw) a card from the hand
 Card Player::playCard()
 {
     if (!hasCards())
     {
-        // No cards – return default card
         return Card();
     }
 
     return hand.draw();
 }
 
-// Check if player has cards
 bool Player::hasCards() const
 {
     return !hand.isEmpty();
 }
 
-// Get player name
 const char *Player::getName() const
 {
     return name;
