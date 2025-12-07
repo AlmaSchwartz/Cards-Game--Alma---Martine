@@ -1,24 +1,30 @@
-#ifndef DECK_HPP
-#define DECK_HPP
-
-#include <cstring>
+#ifndef DECK_H
+#define DECK_H
 #include "Card.hpp"
+#include <string>
 
 class Deck
 {
 private:
-          Card* cards;
-          int cardCount;
-public:
-          Deck();
-          Deck(const Deck& other);
-          Deck& operator=(const Deck& other);
-          ~Deck();
+    Card *cards;
+    int cardCount;
 
-          void populateDeckFromFile(const std::string& filename);
-          void shuffle();
-          Card draw();
-          bool isEmpty() const;
+public:
+    Deck();
+    Deck(const Deck &other);
+
+    Deck &operator=(const Deck &other);
+
+    ~Deck();
+
+    void populateDeckFromFile(const std::string &filename);
+
+    Card draw();
+
+    bool isEmpty() const;
+
+    void shuffle();
+
+    int getCardCount() const { return cardCount; }
 };
 #endif
-

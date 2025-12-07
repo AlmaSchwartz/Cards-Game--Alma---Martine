@@ -3,77 +3,113 @@
 #include <sstream>
 #include <algorithm>
 #include <random>
+#include <iostream>
 
-Deck::Deck() : cards(nullptr), cardCount(0) {}
-Deck::~Deck() {
-    delete[] cards;
+Deck::Deck()
+    : cards(nullptr), cardCount(0)
+{
+    populateDeckFromFile("Cards.txt");
 }
 
-Deck::Deck(const Deck& other) : cards(nullptr), cardCount(other.cardCount) {
-    if (cardCount > 0) {
+Deck::~Deck()
+{
+    delete[] cards;
+    cards = nullptr;
+    cardCount = 0;
+}
+
+Deck::Deck(const Deck &other)
+    : cards(nullptr), cardCount(other.cardCount)
+{
+    if (cardCount > 0)
+    {
         cards = new Card[cardCount];
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < cardCount; ++i)
+        {
             cards[i] = other.cards[i];
+        }
     }
 }
 
-Deck& Deck::operator=(const Deck& other) {
+Deck &Deck::operator=(const Deck &other)
+{
     if (this == &other)
         return *this;
 
     delete[] cards;
+    cards = nullptr;
 
     cardCount = other.cardCount;
 
-    if (cardCount > 0) {
+    if (cardCount > 0)
+    {
         cards = new Card[cardCount];
-        for (int i = 0; i < cardCount; i++)
+        for (int i = 0; i < cardCount; ++i)
+        {
             cards[i] = other.cards[i];
-    } else {
-        cards = nullptr;
+        }
     }
 
     return *this;
 }
 
-void Deck::populateDeckFromFile(const std::string& filename) {
+void Deck::populateDeckFromFile(const std::string &filename)
+{
     std::ifstream file(filename);
-    if (!file) {
+    if (!file)
+    {
         std::cerr << "File not found: " << filename << std::endl;
         return;
     }
 
     std::string line;
     int count = 0;
-    while (std::getline(file, line))
-        count++;
 
-   
+    while (std::getline(file, line))
+    {
+        if (!line.empty())
+            ++count;
+    }
+
+    delete[] cards;
+    cards = nullptr;
+    cardCount = 0;
+
+    if (count == 0)
+    {
+        return;
+    }
+
     cards = new Card[count];
     cardCount = 0;
 
-   
     file.clear();
     file.seekg(0);
 
-    
-    while (std::getline(file, line)) {
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+            continue;
+
         std::stringstream ss(line);
         std::string suitStr, rankStr;
 
         std::getline(ss, suitStr, ',');
         std::getline(ss, rankStr);
 
-        
         if (!rankStr.empty() && rankStr[0] == ' ')
             rankStr.erase(0, 1);
 
         Suit s;
 
-        if (suitStr == "Hearts") s = HEARTS;
-        else if (suitStr == "Diamonds") s = DIAMONDS;
-        else if (suitStr == "Clubs") s = CLUBS;
-        else                         s = SPADES;
+        if (suitStr == "Hearts")
+            s = HEARTS;
+        else if (suitStr == "Diamonds")
+            s = DIAMONDS;
+        else if (suitStr == "Clubs")
+            s = CLUBS;
+        else
+            s = SPADES;
 
         cards[cardCount++] = Card(s, rankStr.c_str());
     }
@@ -81,23 +117,26 @@ void Deck::populateDeckFromFile(const std::string& filename) {
     file.close();
 }
 
-Card Deck::draw() {
+Card Deck::draw()
+{
     if (cardCount == 0)
-        return Card(); 
+    {
+        return Card();
+    }
 
     return cards[--cardCount];
 }
 
-bool Deck::isEmpty() const {
+bool Deck::isEmpty() const
+{
     return cardCount == 0;
 }
+void Deck::shuffle()
+{
+    if (cards == nullptr || cardCount <= 1)
+        return;
 
-void Deck::shuffle() {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(cards, cards + cardCount, g);
 }
-
-
-
-
