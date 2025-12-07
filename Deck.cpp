@@ -8,9 +8,9 @@
 Deck::Deck()
     : cards(nullptr), cardCount(0)
 {
-    populateDeckFromFile("Cards.txt");
 }
 
+// Destructor
 Deck::~Deck()
 {
     delete[] cards;
@@ -101,7 +101,6 @@ void Deck::populateDeckFromFile(const std::string &filename)
             rankStr.erase(0, 1);
 
         Suit s;
-
         if (suitStr == "Hearts")
             s = HEARTS;
         else if (suitStr == "Diamonds")
@@ -115,6 +114,24 @@ void Deck::populateDeckFromFile(const std::string &filename)
     }
 
     file.close();
+}
+
+void Deck::addCard(const Card &c)
+{
+    Card *newCards = new Card[cardCount + 1];
+
+    for (int i = 0; i < cardCount; ++i)
+    {
+        newCards[i] = cards[i];
+    }
+
+    newCards[cardCount] = c;
+
+    delete[] cards;
+
+    cards = newCards;
+
+    ++cardCount;
 }
 
 Card Deck::draw()
@@ -131,6 +148,7 @@ bool Deck::isEmpty() const
 {
     return cardCount == 0;
 }
+
 void Deck::shuffle()
 {
     if (cards == nullptr || cardCount <= 1)

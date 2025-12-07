@@ -11,8 +11,12 @@ private:
 
 public:
     Deck();
+
     Deck(const Deck &other);
+
     Deck &operator=(const Deck &other);
+
+    // Destructor
     ~Deck();
 
     void populateDeckFromFile(const std::string &filename);
@@ -20,7 +24,9 @@ public:
     void addCard(const Card &c);
 
     Card draw();
+
     bool isEmpty() const;
+
     void shuffle();
 
     int getCardCount() const { return cardCount; }
